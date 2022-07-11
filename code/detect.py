@@ -41,7 +41,19 @@ from pycoral.adapters.detect import get_objects
 from pycoral.utils.dataset import read_label_file
 from pycoral.utils.edgetpu import make_interpreter
 from pycoral.utils.edgetpu import run_inference
+from periphery import GPIO
 
+led = GPIO("/dev/gpiochip2", 13, "out")  # pin 37
+button = GPIO("/dev/gpiochip4", 13, "in")  # pin 36
+
+try:
+  while True:
+    led.write(button.read())
+finally:
+  led.write(False)
+  led.close()
+  button.close()
+  
 def generate_svg(src_size, inference_box, objs, labels, text_lines):
     svg = SVG(src_size)
     src_w, src_h = src_size
